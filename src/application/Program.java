@@ -6,47 +6,46 @@ import java.util.Date;
 import java.util.Scanner;
 
 import model.entities.Reservation;
+import model.exceptions.DomainException;
 
 public class Program {
 
-	public static void main(String[] args) throws ParseException {
+	public static void main(String[] args) {
 		Scanner sc = new Scanner(System.in);
 
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 
-		System.out.print("Room number: ");
-		int number = sc.nextInt();
-		System.out.print("Check-in date (dd/MM/yyyy): ");
-		Date checkIn = sdf.parse(sc.next());
-		System.out.print("Check-out date (dd/MM/yyyy): ");
-		Date checkOut = sdf.parse(sc.next());
+			try {
+				System.out.print("Room number: ");
+				int number = sc.nextInt();
+				System.out.print("Check-in date (dd/MM/yyyy): ");
+				Date checkIn = sdf.parse(sc.next());
+				System.out.print("Check-out date (dd/MM/yyyy): ");
+				Date checkOut = sdf.parse(sc.next());
+		
+				Reservation reservation = new Reservation(number, checkIn, checkOut);
+				System.out.println("Reservation: " + reservation);
+		
+				System.out.println();
+				System.out.print("Enter data to update the reservation: ");
+				System.out.print("Check-in date (dd/MM/yyyy): ");
+				checkIn = sdf.parse(sc.next());
+				System.out.print("Check-out date (dd/MM/yyyy): ");
+				checkOut = sdf.parse(sc.next());
+		
+				reservation.updateDates(checkIn, checkOut);
+				System.out.println("Reservation: " + reservation);
 
-		if (!checkOut.after(checkIn)) {
-			System.out.println("Error in reservation: check-out date must be after check-in date");
-		} else {
-			Reservation reservation = new Reservation(number, checkIn, checkOut);
-			System.out.println("Reservation: " + reservation);
-
-			System.out.println();
-			System.out.print("Enter data to update the reservation: ");
-			System.out.print("Check-in date (dd/MM/yyyy): ");
-			checkIn = sdf.parse(sc.next());
-			System.out.print("Check-out date (dd/MM/yyyy): ");
-			checkOut = sdf.parse(sc.next());
-
-			String error = reservation.updateDates(checkIn, checkOut);
-			if(error != null) {
-				System.out.println("Error in reservation: " + error);
+			}
+			catch (ParseException e) {
+				System.out.println("Invalid date format");
 			}
 			
-			else {
+			catch (DomainException e) {
+				System.out.println("Error in reservation: " + e.getMessage());
+			}
 			
-			System.out.println("Reservation: " + reservation);
-
-		}
-
 		sc.close();
-	}
 
-}
+	}
 }
